@@ -31,14 +31,6 @@ const App = () => {
     setPoints(newPoints);
     setEnergy(Math.max(energy - energyToReduce, 0)); // Ensure energy doesn't go below zero
     setClicks([...clicks, { id: Date.now(), x, y }]);
-
-    // Check if the user can earn a Mars coin
-    if (newPoints >= 100) {
-      const newMarsCoins = marsCoins + 1;
-      setMarsCoins(newMarsCoins);
-      setPoints(newPoints - 100); // Deduct points for the Mars coin
-      localStorage.setItem('marsCoins', newMarsCoins.toString()); // Save to localStorage
-    }
   };
 
   const handleAnimationEnd = (id: number) => {
@@ -53,10 +45,13 @@ const App = () => {
   const exchangePointsForMarsCoins = () => {
     if (points >= 100) {
       const newMarsCoins = marsCoins + 1;
+      const updatedPoints = points - 100; // Deduct points for the Mars coin
       setMarsCoins(newMarsCoins);
-      setPoints(points - 100); // Deduct points for the Mars coin
+      setPoints(updatedPoints); // Update points in state
       localStorage.setItem('marsCoins', newMarsCoins.toString()); // Save to localStorage
-      localStorage.setItem('points', (points - 100).toString()); // Update points in localStorage
+      localStorage.setItem('points', updatedPoints.toString()); // Update points in localStorage
+    } else {
+      alert("Not enough points! You need at least 100 points to exchange for Mars coins.");
     }
   };
 
