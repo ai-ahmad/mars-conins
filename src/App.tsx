@@ -21,6 +21,9 @@ const App = () => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
+
+    
+
     setPoints(points + pointsToAdd);
     setEnergy(prevEnergy => Math.max(prevEnergy - energyToReduce, 0));
     setClicks([...clicks, { id: Date.now(), x, y }]);
