@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import './index.css';
 import Arrow from './icons/Arrow';
-import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images';
 
 const App = () => {
   const [points, setPoints] = useState(0);
@@ -15,15 +14,15 @@ const App = () => {
   const energyToReduce = 12;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (energy - energyToReduce < 0) {
-      return;
+    if (energy < energyToReduce) {
+      return; // Prevent clicking if not enough energy
     }
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
     setPoints(points + pointsToAdd);
-    setEnergy(energy - energyToReduce < 0 ? 0 : energy - energyToReduce);
+    setEnergy(prevEnergy => Math.max(prevEnergy - energyToReduce, 0));
     setClicks([...clicks, { id: Date.now(), x, y }]);
   };
 
@@ -45,11 +44,19 @@ const App = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setEnergy((prevEnergy) => Math.min(prevEnergy + 1, 6500));
-    }, 100); // Restore 10 energy points every second
+      setEnergy(prevEnergy => {
+        const newEnergy = Math.min(prevEnergy + 1, 6500);
+        // Save energy to localStorage if needed
+        return newEnergy;
+      });
+    }, 1000); // Restore 1 energy point every second
 
     return () => clearInterval(interval); // Clear interval on component unmount
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('marsCoins', marsCoins.toString()); // Update marsCoins in localStorage
+  }, [marsCoins]);
 
   return (
     <div className="bg-gradient-to-b from-gray-900 to-black min-h-screen px-4 flex flex-col items-center text-white font-medium">
